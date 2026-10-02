@@ -1,0 +1,6 @@
+{
+  "name": "usage-band",
+  "version": "0.1.0",
+  "description": "A band above the prompt graphing each rate-limit window (5 hours, week, per-model week) since its last reset.",
+  "types": "./types/index.d.ts"
+}
