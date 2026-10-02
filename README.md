@@ -17,8 +17,10 @@ Within a group, every field is its own column, so they line up down the rows wha
 widths: rings, then percentages (right-aligned, so `3%` sits under the `9` of `$2.99`), then labels
 (`5h`, `7d`, `$12.08 today`), then reset times, then graphs. The cost row shares those columns.
 
-The space between the two groups is left free, so more can be added in the middle. If the window is
-too narrow for both groups, the weekly group wraps below and sits on the left.
+The space between the two groups is left free, so more can be added in the middle.
+
+If the window is too narrow for both groups side by side, they stack into one group, so all four
+rows share the same columns instead of each group lining up on its own.
 
 ## The rings
 

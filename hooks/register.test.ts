@@ -90,6 +90,20 @@ test('draws each window since its reset and the cost, on every surface with a ba
       expect(await ui.findAll({ type: 'Svg' })).toHaveLength(5)
     }
 
+    // the band's box, then one box per group and per column: two groups side by side at a wide
+    // band, one group of shared columns once the two don't fit
+    const columns = async (bodyColumns: number) => {
+      const view = await $.ui.mount({ plugin: 'usage-band', surface, ...BAND, props: { ...BAND.props, bodyColumns } })
+      const found = await view.findAll({ type: 'Box' })
+
+      await view.unmount()
+
+      return found.length
+    }
+
+    expect(await columns(120)).toBe(surface === 'terminal' ? 11 : 12)
+    expect(await columns(40)).toBe(surface === 'terminal' ? 6 : 7)
+
     await ui.unmount()
   }
 })

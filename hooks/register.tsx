@@ -318,11 +318,40 @@ export const register: Register = on => {
       </Box>
     )
 
-    // The weekly windows keep to the right edge; the room between the groups is free.
+    // Cells a group takes: the widest text of each column, a ring of three, a graph of eight
+    // (an SVG's 56px) or the terminal's text graph, and a cell between columns.
+    const widthOf = (rows: Line[]) => {
+      const widest = (pick: (line: Line) => string) => Math.max(...rows.map(line => pick(line).length))
+      const graphs = rows.some(({ graph }) => graph !== undefined)
+      const columns = [
+        ...(Svg === undefined ? [] : [3]),
+        widest(({ value }) => value),
+        widest(({ label }) => label),
+        widest(({ detail }) => detail),
+        ...(graphs ? [Svg === undefined ? COLUMNS : 8] : []),
+      ]
+
+      return columns.reduce((sum, width) => sum + width, columns.length - 1)
+    }
+
+    const short = lines.filter(({ isWeekly }) => !isWeekly)
+    const weekly = lines.filter(({ isWeekly }) => isWeekly)
+
+    // Side by side while both fit (paddingX 2, columnGap 4): the weekly group keeps to the right
+    // edge and the room between is free. Stacked, they are one group, so the fields of every row
+    // share their columns instead of each group lining up on its own.
+    if (short.length === 0 || weekly.length === 0 || widthOf(short) + widthOf(weekly) + 6 > e.props.bodyColumns) {
+      return (
+        <Box paddingX={1} width="100%">
+          {group([...short, ...weekly])}
+        </Box>
+      )
+    }
+
     return (
-      <Box flexWrap="wrap" justifyContent="space-between" columnGap={4} paddingX={1} width="100%">
-        {group(lines.filter(({ isWeekly }) => !isWeekly))}
-        {group(lines.filter(({ isWeekly }) => isWeekly))}
+      <Box justifyContent="space-between" paddingX={1} width="100%">
+        {group(short)}
+        {group(weekly)}
       </Box>
     )
   })
