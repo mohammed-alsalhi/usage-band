@@ -20,7 +20,7 @@ widths: rings, then percentages (right-aligned, so `3%` sits under the `9` of `$
 The space between the two groups is left free, so more can be added in the middle.
 
 If the window is too narrow for both groups side by side, they stack into one group, so all four
-rows share the same columns instead of each group lining up on its own.
+rows share the same columns instead of each group lining up on its own, with the cost row last.
 
 ## The rings
 

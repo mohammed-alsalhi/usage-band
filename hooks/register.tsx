@@ -261,19 +261,22 @@ export const register: Register = on => {
       }
     })
 
-    if (cost !== undefined) {
-      lines.push({
-        isWeekly: false,
-        ring: ringOf(100, GREEN, DOLLAR),
-        alt: 'cost',
-        value: usd(cost.session),
-        color: GREEN,
-        label: `${usd(cost.today)} today`,
-        detail: `· ${usd(cost.month)} mo`,
-        tone: GREEN,
-        graph: undefined,
-      })
-    }
+    const money: Line[] =
+      cost === undefined
+        ? []
+        : [
+            {
+              isWeekly: false,
+              ring: ringOf(100, GREEN, DOLLAR),
+              alt: 'cost',
+              value: usd(cost.session),
+              color: GREEN,
+              label: `${usd(cost.today)} today`,
+              detail: `· ${usd(cost.month)} mo`,
+              tone: GREEN,
+              graph: undefined,
+            },
+          ]
 
     // A group is columns, not rows, so each field lines up down the group whatever its width;
     // space-around keeps a column of shorter cells level with the rings beside it.
@@ -334,16 +337,17 @@ export const register: Register = on => {
       return columns.reduce((sum, width) => sum + width, columns.length - 1)
     }
 
-    const short = lines.filter(({ isWeekly }) => !isWeekly)
+    const timed = lines.filter(({ isWeekly }) => !isWeekly)
+    const short = [...timed, ...money]
     const weekly = lines.filter(({ isWeekly }) => isWeekly)
 
     // Side by side while both fit (paddingX 2, columnGap 4): the weekly group keeps to the right
     // edge and the room between is free. Stacked, they are one group, so the fields of every row
-    // share their columns instead of each group lining up on its own.
+    // share their columns instead of each group lining up on its own, the cost last.
     if (short.length === 0 || weekly.length === 0 || widthOf(short) + widthOf(weekly) + 6 > e.props.bodyColumns) {
       return (
         <Box paddingX={1} width="100%">
-          {group([...short, ...weekly])}
+          {group([...timed, ...weekly, ...money])}
         </Box>
       )
     }
